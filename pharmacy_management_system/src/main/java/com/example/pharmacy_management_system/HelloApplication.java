@@ -1,6 +1,5 @@
 package com.example.pharmacy_management_system;
 
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

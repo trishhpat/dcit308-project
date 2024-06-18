@@ -1,51 +1,79 @@
 package com.example.pharmacy_management_system;
 
 
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.scene.Node;
+import javafx.event.ActionEvent;
 
 import java.io.IOException;
 
 public class HelloController {
 
-    @FXML
-    private void handleAddDrugs() throws IOException {
-        navigate("add_drug.fxml", "Add Drugs");
+
+    public void navigate(String fxml, ActionEvent event) throws Exception {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
+        Parent root = loader.load();
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.getScene().setRoot(root);
     }
 
-    @FXML
-    private void handleSearchDrugs() throws IOException {
-        navigate("search_drug.fxml", "Search Drugs");
+    public void handleBack(ActionEvent event) {
+        try {
+            Parent homePage = FXMLLoader.load(getClass().getResource("/com/example/pharmacy_management_system/hello-view.fxml"));
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.getScene().setRoot(homePage);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void handleAddDrugs(ActionEvent event) {
+        try {
+            navigate("/com/example/pharmacy_management_system/add_drug.fxml", event);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    @FXML
-    private void handleViewSuppliers() throws IOException {
-        navigate("view_suppliers.fxml", "View Suppliers");
+    public void handleSearchDrugs(ActionEvent event) {
+        try {
+            navigate("/com/example/pharmacy_management_system/search_drug.fxml", event);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    @FXML
-    private void handleViewDrugs() throws IOException {
-        navigate("view_drugs.fxml", "View Drugs");
+    public void handleViewSuppliers(ActionEvent event) {
+        try {
+            navigate("/com/example/pharmacy_management_system/view_suppliers.fxml", event);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    @FXML
-    private void handleViewPurchaseHistory() throws IOException {
-        navigate("/fxml/view_purchase_history.fxml", "View Purchase History");
+    public void handleViewDrugs(ActionEvent event) {
+        try {
+            navigate("/com/example/pharmacy_management_system/view_drugs.fxml", event);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    @FXML
-    private void handleStatisticsAndReports() throws IOException {
-        navigate("/fxml/statistics.fxml", "Statistics and Reports");
+    public void handleViewPurchaseHistory(ActionEvent event) {
+        try {
+            navigate("/com/example/pharmacy_management_system/view_purchase_history.fxml", event);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public void handleStatisticsAndReports(ActionEvent event) {
+        try {
+            navigate("/com/example/pharmacy_management_system/statistics.fxml", event);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    private void navigate(String fxmlPath, String title) throws IOException {
-        Stage stage = new Stage();
-        Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
-        stage.setTitle(title);
-        stage.setScene(new Scene(root));
-        stage.show();
-    }
 }
