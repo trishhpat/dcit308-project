@@ -2,7 +2,6 @@ package com.example.pharmacy_management_system.controllers;
 
 import com.example.pharmacy_management_system.models.Drug;
 import com.example.pharmacy_management_system.models.PurchaseHistory;
-import com.example.pharmacy_management_system.utils.DatabaseConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -19,11 +18,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,11 +51,10 @@ public class AddPurchaseController {
 
     //declare the system Models here  Model here 
     private Drug drugModel = new Drug();
-    private PurchaseHistory purchasesModel = new PurchaseHistory();
 
 
     // Data structure to store drug names and prices for suggestions and calculations
-    private Map<String, Double> drugNamePriceMap = new HashMap<>();
+    private Map<String, Drug> drugNamePriceMap = new HashMap<>();
 
     public void initialize() {
         successLabel.setTranslateY(40);
@@ -79,12 +73,13 @@ public class AddPurchaseController {
                 drugNameField.setText(newValue); // Set selected drug name in the text field
             }
         });
+
     }
 
     private void fetchDrugDataFromDatabaseAndPopulateItInDrugNamePrice() {
         ObservableList<Drug> drugs = drugModel.getDrugsInDatabase();
         for (Drug drug : drugs) {
-            drugNamePriceMap.put(drug.getDrugName(), drug.getPrice());
+            drugNamePriceMap.put(drug.getDrugName(), drug);
         }
     }
 
@@ -119,14 +114,15 @@ public class AddPurchaseController {
             int quantity = Integer.parseInt(quantityField.getText().trim());
             double totalAmount = calculateTotalAmount(drugName, quantity);
             LocalDateTime currentDate = LocalDateTime.now();
-            PurchaseHistory newPurchase = new PurchaseHistory(drugName,currentDate,buyer,quantity,totalAmount);
 
-            if(newPurchase.isStoredInDatabaeSuccessfully()){
+            PurchaseHistory newPurchase = new PurchaseHistory(drugName,currentDate,buyer,quantity,totalAmount);
+            if(newPurchase.isStoredInDatabaeSuccessfully() && drugModel.drugUpdateWasSuccessfulOnPurchaseWithQuantity(drugNamePriceMap.get(drugName).getId(), drugNamePriceMap.get(drugName).getQuantity(), quantity)){
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Success");
                 alert.setHeaderText(null);
                 alert.setContentText("Purchase recorded successfully added successfully!");
                 alert.showAndWait();
+                clearFields();
             }else{
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
@@ -140,37 +136,19 @@ public class AddPurchaseController {
 
 
     private double calculateTotalAmount(String drugName, int quantity) throws SQLException {
-        if (drugNamePriceMap.containsKey(drugName)) {
-            double price = drugNamePriceMap.get(drugName);
+        if (drugNamePriceMap.containsKey(drugName) && quantity <= drugNamePriceMap.get(drugName).getQuantity()) {
+            double price = drugNamePriceMap.get(drugName).getPrice();
             return quantity * price;
-        } else {
+        }else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Quantity is more than available you only have " + drugNamePriceMap.get(drugName).getQuantity() + " Available " );
+            alert.showAndWait();
             throw new IllegalArgumentException("Drug name not found in database: " + drugName);
         }
     }
 
-    // private void savePurchase(String drugName, String buyer, int quantity, double totalAmount, LocalDate currentDate) {
-    //     // Assuming you have a database connection and a table to store purchases
-    //     try (Connection connection = DatabaseConnection.getConnection()) {
-    //         String query = "INSERT INTO purchase_history (drug_name, buyer, quantity, total_amount, purchase_date) VALUES (?, ?, ?, ?, ?)";
-    //         PreparedStatement statement = connection.prepareStatement(query);
-    //         statement.setString(1, drugName);
-    //         statement.setString(2, buyer);
-    //         statement.setInt(3, quantity);
-    //         statement.setDouble(4, totalAmount);
-    //         statement.setDate(5, java.sql.Date.valueOf(currentDate));
-
-    //         int rowsInserted = statement.executeUpdate();
-    //         if (rowsInserted > 0) {
-    //             System.out.println("A new purchase was added successfully!");
-    //             successLabel.setVisible(true);
-    //         }
-
-    //         statement.close();
-    //     } catch (SQLException e) {
-    //         e.printStackTrace();
-    //         // Handle database exception (show error message, log, etc.)
-    //     }
-    // }
 
     @FXML
     private void handleCalculate(ActionEvent event) {
