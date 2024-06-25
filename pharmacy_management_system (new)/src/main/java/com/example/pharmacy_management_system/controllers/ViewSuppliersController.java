@@ -20,9 +20,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.SQLException;
+
 
 public class ViewSuppliersController {
     @FXML
@@ -43,12 +42,13 @@ public class ViewSuppliersController {
     @FXML
     private Label loadingLabel;
 
+    private Supplier supplierModel = new Supplier();
+
     @FXML
-    public void initialize() {
+    public void initialize() throws SQLException {
         supplierNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         supplierContactColumn.setCellValueFactory(new PropertyValueFactory<>("contact"));
         supplierAddressColumn.setCellValueFactory(new PropertyValueFactory<>("address"));
-
         loadSuppliers();
 
         // Handle double-click on suppliersTable
@@ -62,29 +62,9 @@ public class ViewSuppliersController {
         });
     }
 
-    private void loadSuppliers() {
+    private void loadSuppliers() throws SQLException {
         ObservableList<Supplier> suppliers = FXCollections.observableArrayList();
-
-        String sql = "SELECT * FROM suppliers";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-
-            while (rs.next()) {
-                int id = rs.getInt("id");
-                String name = rs.getString("name");
-                String contact = rs.getString("contact");
-                String address = rs.getString("address");
-
-                Supplier supplier = new Supplier(id, name, contact, address);
-                suppliers.add(supplier);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        suppliers = supplierModel.listOfSupplier();
         suppliersTable.setItems(suppliers);
     }
 

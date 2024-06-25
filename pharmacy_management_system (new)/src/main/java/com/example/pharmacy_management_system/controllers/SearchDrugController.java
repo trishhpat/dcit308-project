@@ -1,7 +1,6 @@
 package com.example.pharmacy_management_system.controllers;
 
 import com.example.pharmacy_management_system.models.Drug;
-import com.example.pharmacy_management_system.utils.DatabaseConnection;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -11,7 +10,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -20,10 +18,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 public class SearchDrugController {
     @FXML
@@ -52,6 +46,8 @@ public class SearchDrugController {
 
     private ObservableList<Drug> searchResults = FXCollections.observableArrayList();
 
+    private Drug drugModel = new Drug();
+
     @FXML
     public void initialize() {
         // Initialize table columns
@@ -66,12 +62,10 @@ public class SearchDrugController {
 
     @FXML
     private void handleSearch(ActionEvent event) {
-        searchResults.clear(); // Clear previous search results
-
+        searchResults.clear(); 
         String searchTerm = searchField.getText().trim();
 
         if (searchTerm.isEmpty()) {
-            // Display message or handle empty search term
             return;
         }
 
@@ -82,42 +76,14 @@ public class SearchDrugController {
         Task<Void> searchTask = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-                try (Connection connection = DatabaseConnection.getConnection()) {
-                    String query = "SELECT * FROM drugs WHERE LOWER(drug_name) LIKE LOWER(?)";
-                    PreparedStatement statement = connection.prepareStatement(query);
-                    statement.setString(1, "%" + searchTerm.toLowerCase() + "%");
-
-                    ResultSet resultSet = statement.executeQuery();
-
-                    while (resultSet.next()) {
-                        int id = resultSet.getInt("id");
-                        String drugName = resultSet.getString("drug_name");
-                        String description = resultSet.getString("description");
-                        int quantity = resultSet.getInt("quantity");
-                        double price = resultSet.getDouble("price");
-                        int supplier_id = resultSet.getInt("supplier_id");
-
-                        Drug drug = new Drug(id, drugName, description, quantity, price, supplier_id);
-                        searchResults.add(drug);
-                    }
-
-                    resultSet.close();
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    // Handle database query exception
-                }
+                searchResults = drugModel.searchDrugByName(searchTerm);
                 return null;
             }
 
             @Override
             protected void succeeded() {
                 super.succeeded();
-
-                // Hide "Please wait" label when search is complete
                 pleaseWaitLabel.setVisible(false);
-
-                // Update TableView on JavaFX Application Thread
                 Platform.runLater(() -> {
                     searchResultsTable.setItems(searchResults);
                 });
@@ -126,6 +92,7 @@ public class SearchDrugController {
 
         new Thread(searchTask).start();
     }
+
 
     @FXML
     public void handleBack(ActionEvent event) {

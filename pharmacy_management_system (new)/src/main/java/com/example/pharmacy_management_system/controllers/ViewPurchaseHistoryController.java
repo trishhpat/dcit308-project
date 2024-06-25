@@ -1,9 +1,6 @@
 package com.example.pharmacy_management_system.controllers;
 
 import com.example.pharmacy_management_system.models.PurchaseHistory;
-import com.example.pharmacy_management_system.utils.DatabaseConnection;
-
-import com.example.pharmacy_management_system.models.Drug;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -21,9 +18,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.time.LocalDateTime;
 
 public class ViewPurchaseHistoryController {
@@ -52,6 +46,8 @@ public class ViewPurchaseHistoryController {
     @FXML
     private Label loadingLabel;
 
+    private PurchaseHistory purchaseHistoryModel = new PurchaseHistory();
+
     @FXML
     public void initialize() {
         purchaseDateColumn.setCellValueFactory(new PropertyValueFactory<>("purchaseDate"));
@@ -65,35 +61,10 @@ public class ViewPurchaseHistoryController {
 
     private void loadPurchaseHistory() {
         ObservableList<PurchaseHistory> purchaseHistories = FXCollections.observableArrayList();
-
-        String sql = "SELECT ph.*, d.drug_name " +
-                "FROM purchase_history ph " +
-                "JOIN drugs d ON ph.drug_name = d.drug_name";
-
-        
-        try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-
-            while (rs.next()) {
-                int id = rs.getInt("id");
-                String drugName = rs.getString("drug_name");
-                LocalDateTime purchaseDate = rs.getTimestamp("purchase_date").toLocalDateTime();
-                String buyer = rs.getString("buyer");
-                int quantity = rs.getInt("quantity");
-                double totalAmount = rs.getDouble("total_amount");
-
-                PurchaseHistory purchaseHistory = new PurchaseHistory(drugName, purchaseDate, buyer, quantity, totalAmount);
-                purchaseHistory.setId(id); // Set the ID retrieved from the database
-                purchaseHistories.add(purchaseHistory);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        purchaseHistories = purchaseHistoryModel.listOfPurchases();
         purchaseHistoryTable.setItems(purchaseHistories);
     }
+
 
     public void handleBack(ActionEvent event) {
         try {

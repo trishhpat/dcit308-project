@@ -38,12 +38,9 @@ public class ViewDrugsController {
     @FXML
     private Label loadingLabel;
 
-    private static final String URL = "jdbc:postgresql://dpg-cpnubig8fa8c73b7h500-a.oregon-postgres.render.com:5432/pms_database_v9a2";
-    private static final String USER = "pms_database_v9a2_user";
-    private static final String PASSWORD = "r3UcCBXBQ9umX0L2c96E2BoYRHsJzR6a";
-
     private ObservableList<Drug> drugData;
 
+    private Drug drugModel = new Drug();
     @FXML
     public void initialize() {
         drugData = FXCollections.observableArrayList();
@@ -86,30 +83,8 @@ public class ViewDrugsController {
 
     private void loadDrugsFromDatabase() {
         drugData.clear();
-        String sql = "SELECT * FROM drugs";
-
-        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-
-            while (rs.next()) {
-                int id = rs.getInt("id");
-                String drugName = rs.getString("drug_name");
-                String description = rs.getString("description");
-                int quantity = rs.getInt("quantity");
-                double price = rs.getDouble("price");
-                int supplier_id = rs.getInt("supplier_id");
-
-
-                Drug drug = new Drug(id, drugName, description, quantity, price, supplier_id);
-                drugData.add(drug);
-            }
-
-            drugsTable.setItems(drugData);
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        drugData = drugModel.getDrugsInDatabase();
+        drugsTable.setItems(drugData);
     }
 
     public void handleBack(ActionEvent event) {

@@ -7,6 +7,8 @@ import javafx.collections.ObservableList;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +24,16 @@ public class Supplier {
         this.contact = contact;
         this.address = address;
     }
+
+    public Supplier(String name, String contact, String address) {
+        this.name = name;
+        this.contact = contact;
+        this.address = address;
+    }
+
+
+
+    public Supplier(){}
 
     // Getters and setters
 
@@ -57,6 +69,36 @@ public class Supplier {
         this.address = address;
     }
 
+
+
+
+
+
+    public ObservableList<Supplier> listOfSupplier() throws SQLException{
+        ObservableList<Supplier> suppliersList = FXCollections.observableArrayList();
+        Connection connection = DatabaseConnection.getConnection();
+        String query = "SELECT * FROM suppliers";
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                String contact = resultSet.getString("contact");
+                String address = resultSet.getString("address");
+
+                // Create Supplier object and add to the suppliersList
+                Supplier supplier = new Supplier(id, name, contact, address);
+                suppliersList.add(supplier);
+            }
+            return   suppliersList;
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     // Method to fetch all drugs associated with this supplier
     public ObservableList<Drug> getAssociatedDrugs() {
         ObservableList<Drug> drugs = FXCollections.observableArrayList();
@@ -85,4 +127,21 @@ public class Supplier {
 
         return drugs;
     }
+
+
+    public boolean isSuccessfullyStoredInDatabase(){
+        try(Connection connection = DatabaseConnection.getConnection()) {
+            String sql = "INSERT INTO suppliers (name, contact, address) VALUES (?, ?, ?)";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, this.name);
+            statement.setString(2, this.contact);
+            statement.setString(3, this.address);
+            statement.executeUpdate();
+            return true;  
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }

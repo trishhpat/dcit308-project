@@ -12,10 +12,8 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+
+import com.example.pharmacy_management_system.models.Supplier;
 
 public class AddSupplierController {
     @FXML
@@ -35,10 +33,6 @@ public class AddSupplierController {
 
     @FXML
     private Label loadingLabel;
-
-    private static final String URL = "jdbc:postgresql://dpg-cpnubig8fa8c73b7h500-a.oregon-postgres.render.com:5432/pms_database_v9a2";
-    private static final String USER = "pms_database_v9a2_user";
-    private static final String PASSWORD = "r3UcCBXBQ9umX0L2c96E2BoYRHsJzR6a";
 
     @FXML
     public void handleBack(ActionEvent event) {
@@ -62,28 +56,16 @@ public class AddSupplierController {
             messageLabel.setVisible(true);
             return;
         }
-
-        String sql = "INSERT INTO suppliers (name, contact, address) VALUES (?, ?, ?)";
-
-        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setString(1, name);
-            pstmt.setString(2, contact);
-            pstmt.setString(3, address);
-
-            int affectedRows = pstmt.executeUpdate();
-            if (affectedRows > 0) {
-                messageLabel.setText("Supplier added successfully!");
-                messageLabel.setVisible(true);
-                clearFields();
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+    
+        Supplier newSupplier = new Supplier(name,contact,address);
+        if(newSupplier.isSuccessfullyStoredInDatabase()){
+            messageLabel.setText("Supplier added successfully!");
+            messageLabel.setVisible(true);
+            clearFields();
+        }else{
             messageLabel.setText("Error adding supplier.");
             messageLabel.setVisible(true);
-        }
+        }    
     }
 
     private void clearFields() {
@@ -91,6 +73,7 @@ public class AddSupplierController {
         contactField.clear();
         addressField.clear();
     }
+
 
     public void navigate(String fxml, ActionEvent event) {
         // Show the loading label

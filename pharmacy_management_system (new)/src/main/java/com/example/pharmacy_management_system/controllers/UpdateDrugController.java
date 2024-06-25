@@ -32,11 +32,12 @@ public class UpdateDrugController {
     @FXML
     private Label loadingLabel;
 
+    private Drug drugModel = new Drug();
+
     private Drug drug;
 
-    private static final String URL = "jdbc:postgresql://dpg-cpnubig8fa8c73b7h500-a.oregon-postgres.render.com:5432/pms_database_v9a2";
-    private static final String USER = "pms_database_v9a2_user";
-    private static final String PASSWORD = "r3UcCBXBQ9umX0L2c96E2BoYRHsJzR6a";
+    private Alert alert = new Alert(Alert.AlertType.ERROR);
+
 
     public void initData(Drug drug) {
         this.drug = drug;
@@ -61,24 +62,14 @@ public class UpdateDrugController {
         double newPrice = Double.parseDouble(drugPriceField.getText());
         String newDescription = drugDescriptionField.getText();
 
-        String sql = "UPDATE drugs SET drug_name = ?, price = ?, description = ? WHERE id = ?";
-
-        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setString(1, newName);
-            pstmt.setDouble(2, newPrice);
-            pstmt.setString(3, newDescription);
-            pstmt.setInt(4, drug.getId());
-
-            pstmt.executeUpdate();
-
-            // Close the update window
+        if(drugModel.drugUpdateWasSuccessfulNoQuantity(drug.getId(), newName,newPrice, newDescription)){
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.close();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+        }else{
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Error updating drug.");
+            alert.showAndWait();
         }
     }
 
@@ -89,22 +80,17 @@ public class UpdateDrugController {
         alert.showAndWait();
 
         if (alert.getResult() == ButtonType.YES) {
-            String sql = "DELETE FROM drugs WHERE id = ?";
-
-            try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
-                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-                pstmt.setInt(1, drug.getId());
-                pstmt.executeUpdate();
-
-                // Close the update window
+            if(drugModel.drugIsDeletedSuccessfully(drug.getId())){
                 Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                stage.close();
-
-            } catch (SQLException e) {
-                e.printStackTrace();
+                stage.close(); 
+            }else{
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("Error updating drug.");
+                alert.showAndWait();
             }
         }
+
     }
 
     public void navigate(String fxml, ActionEvent event) {
