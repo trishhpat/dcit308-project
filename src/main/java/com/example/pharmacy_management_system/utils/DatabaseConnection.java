@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+//Note the credentials in this project are temporary. They would expire after a while so you would need to configure your personal database either locally or remotely. The database used for this project is an online one. 
 public class DatabaseConnection {
     private static final String URL = "jdbc:postgresql://dpg-cpnubig8fa8c73b7h500-a.oregon-postgres.render.com/pms_database_v9a2";
     private static final String USER = "pms_database_v9a2_user";
