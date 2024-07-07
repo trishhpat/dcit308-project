@@ -76,9 +76,9 @@ mvn javafx:run
 ```
 
 ## Usage
-Dashboard: Navigate through the dashboard to manage drugs, suppliers, and view purchase history.
-Add Purchase: Record new purchase transactions by filling in the required details.
-View Reports: Generate and view reports on drug sales and inventory levels.
+- Dashboard: Navigate through the dashboard to manage drugs, suppliers, and view purchase history.
+- Add Purchase: Record new purchase transactions by filling in the required details.
+- View Reports: Generate and view reports on drug sales and inventory levels.
 
 
 
