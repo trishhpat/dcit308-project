@@ -46,7 +46,7 @@ The Pharmacy Management System is a comprehensive application designed to stream
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/your-username/pharmacy-management-system.git
+   git clone https://github.com/trishhpat/dcit308-project.git
 
 
    ```
