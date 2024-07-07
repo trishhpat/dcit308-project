@@ -52,9 +52,6 @@ The Pharmacy Management System is a comprehensive application designed to stream
    ```
 2. **Navigate to the project directory**
 
-```bash
-cd pharmacy-management-system
-```
 3. **Install dependencies**
 
 ```bash
