@@ -8,10 +8,20 @@ The Pharmacy Management System is a comprehensive application designed to stream
 ## Table of Contents
 
 - [Project Overview](#project-overview)
+- [Tech Stack](#tech-stack)
 - [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
 - [Team](#team)
+
+
+## Tech Stack
+
+- **Java**: Core programming language for the application.
+- **JavaFX**: Used for building the user interface.
+- **Maven**: Dependency management and build tool.
+- **PostgreSQL**: Relational database for storing data.
+- **FXML**: XML-based language used to define the UI components.
 
 
 ## Features
