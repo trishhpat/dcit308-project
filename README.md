@@ -1,4 +1,5 @@
-# Pharmacy Management System
+# DCIT308 - Pharmacy Management System
+![Pharmacy Management System Dashboard](https://github.com/trishhpat/dcit308-project/blob/master/Screenshot%20from%202024-06-23%2004-01-12.png)
 
 ## Project Overview
 
