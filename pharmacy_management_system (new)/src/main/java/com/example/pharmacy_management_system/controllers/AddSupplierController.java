@@ -63,6 +63,7 @@ public class AddSupplierController {
             messageLabel.setVisible(true);
             clearFields();
         }else{
+            messageLabel.setStyle("-fx-progress-color: red;");
             messageLabel.setText("Error adding supplier.");
             messageLabel.setVisible(true);
         }    

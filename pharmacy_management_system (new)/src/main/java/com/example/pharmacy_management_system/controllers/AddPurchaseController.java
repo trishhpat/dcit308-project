@@ -116,6 +116,7 @@ public class AddPurchaseController {
             LocalDateTime currentDate = LocalDateTime.now();
 
             PurchaseHistory newPurchase = new PurchaseHistory(drugName,currentDate,buyer,quantity,totalAmount);
+            
             if(newPurchase.isStoredInDatabaeSuccessfully() && drugModel.drugUpdateWasSuccessfulOnPurchaseWithQuantity(drugNamePriceMap.get(drugName).getId(), drugNamePriceMap.get(drugName).getQuantity(), quantity)){
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Success");

@@ -49,6 +49,15 @@
             <version>42.5.4</version>
         </dependency>
 
+
+        <!-- SQLite JDBC Driver -->
+        <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.36.0.3</version>
+        </dependency>
+
+
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
@@ -118,6 +127,7 @@
 
     <build>
         <plugins>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -127,6 +137,31 @@
                     <target>20</target>
                 </configuration>
             </plugin>
+
+
+            <!-- Flyway Maven Plugin -->
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>8.5.6</version> <!-- Ensure this matches the Flyway version you're using -->
+                <configuration>
+                    <url>jdbc:sqlite:src/main/java/com/example/pharmacy_management_system/utils/pharmacyProjectDataBase.db</url>
+                    <!-- No username or password needed for SQLite -->
+                    <locations>
+                        <location>filesystem:src/main/java/com/example/pharmacy_management_system/utils/Migrations</location>
+                    </locations>
+                </configuration>
+                <dependencies>
+                    <!-- Specify SQLite JDBC driver as dependency -->
+                    <dependency>
+                        <groupId>org.xerial</groupId>
+                        <artifactId>sqlite-jdbc</artifactId>
+                        <version>3.36.0.3</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
@@ -149,6 +184,10 @@
                     </execution>
                 </executions>
             </plugin>
+
+
+
+
         </plugins>
     </build>
 </project>
