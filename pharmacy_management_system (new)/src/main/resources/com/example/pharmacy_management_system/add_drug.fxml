@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.pharmacy_management_system.controllers.AddDrugController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.pharmacy_management_system.controllers.AddDrugController">
     <children>
         <BorderPane layoutY="1.0" prefHeight="525.0" prefWidth="927.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <top>
@@ -176,12 +176,17 @@
                                 <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="426.1332763671875" minWidth="10.0" prefWidth="426.1332763671875" />
                             </columnConstraints>
                             <rowConstraints>
-                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints maxHeight="55.0" minHeight="10.0" prefHeight="55.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="62.0" minHeight="0.0" prefHeight="23.0" vgrow="SOMETIMES" />
+                                <RowConstraints maxHeight="137.0" minHeight="10.0" prefHeight="51.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="137.0" minHeight="10.0" prefHeight="27.0" vgrow="SOMETIMES" />
+                                <RowConstraints maxHeight="156.0" minHeight="10.0" prefHeight="55.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="156.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints maxHeight="152.0" minHeight="10.0" prefHeight="60.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="152.0" minHeight="10.0" prefHeight="31.0" vgrow="SOMETIMES" />
+                                <RowConstraints maxHeight="123.0" minHeight="10.0" prefHeight="67.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="123.0" minHeight="10.0" prefHeight="33.0" vgrow="SOMETIMES" />
+                                <RowConstraints maxHeight="64.0" minHeight="10.0" prefHeight="61.0" vgrow="SOMETIMES" />
                         <RowConstraints />
                             </rowConstraints>
                             <children>
@@ -190,39 +195,44 @@
                                         <Font name="System Bold" size="13.0" />
                                     </font>
                                 </Label>
-                                <Label alignment="CENTER" layoutX="10.0" layoutY="41.0" prefHeight="18.0" prefWidth="139.0" text="Description : " textFill="#0383df" GridPane.rowIndex="1">
+                                <Label alignment="CENTER" layoutX="10.0" layoutY="41.0" prefHeight="18.0" prefWidth="139.0" text="Description : " textFill="#0383df" GridPane.rowIndex="2">
                                     <font>
                                         <Font name="System Bold" size="13.0" />
                                     </font>
                                 </Label>
-                                <Label alignment="CENTER" layoutX="10.0" layoutY="123.0" prefHeight="18.0" prefWidth="118.0" text="Quantity :" textFill="#0383df" GridPane.rowIndex="2">
+                                <Label alignment="CENTER" layoutX="10.0" layoutY="123.0" prefHeight="18.0" prefWidth="118.0" text="Quantity :" textFill="#0383df" GridPane.rowIndex="4">
                                     <font>
                                         <Font name="System Bold" size="13.0" />
                                     </font>
                                 </Label>
-                                <Label alignment="CENTER" layoutX="10.0" layoutY="204.0" prefHeight="18.0" prefWidth="103.0" text="Price :" textFill="#0383df" GridPane.rowIndex="3">
+                                <Label alignment="CENTER" layoutX="10.0" layoutY="204.0" prefHeight="18.0" prefWidth="103.0" text="Price :" textFill="#0383df" GridPane.rowIndex="6">
                                     <font>
                                         <Font name="System Bold" size="13.0" />
                                     </font>
                                 </Label>
                                 <TextField fx:id="drugNameField" prefHeight="40.0" prefWidth="426.0" style="-fx-background-radius: 20;" GridPane.columnIndex="1" />
-                                <TextField fx:id="descriptionField" layoutX="129.0" layoutY="36.0" prefHeight="40.0" style="-fx-background-radius: 20;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                <TextField fx:id="quantityField" layoutX="129.0" layoutY="116.0" prefHeight="40.0" style="-fx-background-radius: 20;" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                <TextField fx:id="priceField" layoutX="129.0" layoutY="196.0" prefHeight="40.0" style="-fx-background-radius: 20;" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                <Label alignment="CENTER" prefHeight="18.0" prefWidth="123.0" text="Supplier:" textFill="#0483de" GridPane.rowIndex="4">
+                                <TextField fx:id="descriptionField" layoutX="129.0" layoutY="36.0" prefHeight="40.0" style="-fx-background-radius: 20;" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                <TextField fx:id="quantityField" layoutX="129.0" layoutY="116.0" prefHeight="40.0" style="-fx-background-radius: 20;" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                <TextField fx:id="priceField" layoutX="129.0" layoutY="196.0" prefHeight="40.0" style="-fx-background-radius: 20;" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                <Label alignment="CENTER" prefHeight="18.0" prefWidth="123.0" text="Supplier:" textFill="#0483de" GridPane.rowIndex="8">
                            <font>
                               <Font name="System Bold" size="13.0" />
                            </font></Label>
-                                <ComboBox fx:id="supplierComboBox" prefHeight="40.0" prefWidth="433.0" promptText="Select Supplier" style="-fx-background-radius: 20; -fx-background-color: #26c2ff;" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                <Button alignment="CENTER" onAction="#handleSaveDrug" prefHeight="42.0" prefWidth="350.0" style="-fx-background-color: #0383df; -fx-background-radius: 20;" text="Add Drug" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                                <ComboBox fx:id="supplierComboBox" prefHeight="40.0" prefWidth="433.0" promptText="Select Supplier" style="-fx-background-radius: 20; -fx-background-color: #26c2ff;" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                                <Button alignment="CENTER" onAction="#handleSaveDrug" prefHeight="42.0" prefWidth="350.0" style="-fx-background-color: #0383df; -fx-background-radius: 20;" text="Add Drug" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="10">
                                     <font>
                                         <Font name="System Bold" size="13.0" />
                                     </font>
                                 </Button>
-                                <Label fx:id="errorLabel" alignment="CENTER" prefHeight="18.0" prefWidth="305.0" text="Error adding drug." textAlignment="CENTER" textFill="red" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                                <Label fx:id="pleaseWaitLabel" alignment="CENTER" prefHeight="18.0" prefWidth="305.0" textAlignment="CENTER" textFill="#0cb935" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                <Label fx:id="errorLabel" alignment="CENTER" prefHeight="18.0" prefWidth="305.0" text="Error adding drug." textAlignment="CENTER" textFill="red" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+                                <Label fx:id="pleaseWaitLabel" alignment="CENTER" prefHeight="18.0" prefWidth="305.0" textAlignment="CENTER" textFill="#0cb935" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="10" />
 
-                                <Label fx:id="successLabel" alignment="CENTER" prefHeight="18.0" prefWidth="305.0" text="Drug added successfully!" textAlignment="CENTER" textFill="#0cb935" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                <Label fx:id="successLabel" alignment="CENTER" prefHeight="18.0" prefWidth="305.0" text="Drug added successfully!" textAlignment="CENTER" textFill="#0cb935" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                        <Label fx:id="drugNameErrorFeild" prefHeight="17.0" prefWidth="412.0" textFill="#e80404" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label fx:id="descriptionErrorFeild" prefHeight="17.0" prefWidth="423.0" textFill="#f20808" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <Label fx:id="quantityErrorFeild" prefHeight="17.0" prefWidth="428.0" textFill="#eb0202" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                        <Label fx:id="priceErrorFeild" prefHeight="17.0" prefWidth="427.0" textFill="#e40808" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                        <Label fx:id="supplierErrorFeild" prefHeight="17.0" prefWidth="433.0" textFill="#f20606" GridPane.columnIndex="1" GridPane.rowIndex="9" />
                             </children>
                         </GridPane>
                         <Separator prefHeight="0.0" prefWidth="844.0" />

@@ -23,6 +23,22 @@ public class Validator{
         return result;
     }
 
+    private static <T> HashMap<String,Object> required(T input) {
+        HashMap<String,Object>  result = new HashMap<>();
+        String data;
+        String errorMessage = null;
+        
+        if ("".equals(input.toString())){
+            errorMessage = "cannot be empty ";
+            data =null;
+        }else{
+            data = input.toString();
+        }
+
+        result.put("errorMessage",errorMessage);
+        result.put("data",data);
+        return result;
+    }
 
     
     private static <T> HashMap<String,Object> mustBeTextMoreThanCharacters(T input, int number) {
@@ -34,8 +50,6 @@ public class Validator{
             errorMessage = "this feild must be more than " + number;
             data = null;
         }
-
-
         result.put("errorMessage",errorMessage);
         result.put("data",data);
         return result;
@@ -118,6 +132,7 @@ public class Validator{
             }
         }
         if(method.toString().equals("mustBeText"))return mustBeText(input);
+        if(method.toString().equals("required"))return required(input);
         if(method.toString().equals("mustBeTextMoreThanCharacters"))return mustBeTextMoreThanCharacters(input,limit);
         if(method.toString().equals("mustBeTextLessThanCharacters"))return mustBeTextLessThanCharacters(input,limit);
         if(method.toString().equals("mustBeFloat"))return mustBeFloat(input);

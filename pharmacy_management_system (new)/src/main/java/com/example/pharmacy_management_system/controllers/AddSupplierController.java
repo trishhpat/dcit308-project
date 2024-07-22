@@ -1,7 +1,7 @@
 package com.example.pharmacy_management_system.controllers;
 
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -12,7 +12,10 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 
 import java.io.IOException;
+import java.util.HashMap;
 
+import com.example.pharmacy_management_system.controllers.ControllerTraits.Navigator;
+import com.example.pharmacy_management_system.controllers.ControllerTraits.Validator;
 import com.example.pharmacy_management_system.models.Supplier;
 
 public class AddSupplierController {
@@ -35,6 +38,15 @@ public class AddSupplierController {
     private Label loadingLabel;
 
     @FXML
+    private Label nameErrorFeild;
+
+    @FXML
+    private Label contactErrorFeild;
+
+    @FXML
+    private Label addressErrorFeild;
+
+    @FXML
     public void handleBack(ActionEvent event) {
         try {
             Parent homePage = FXMLLoader.load(getClass().getResource("/com/example/pharmacy_management_system/view_suppliers.fxml"));
@@ -46,27 +58,46 @@ public class AddSupplierController {
     }
 
     @FXML
-    private void handleAdd() {
+    private void handleAdd(ActionEvent event) {
         String name = nameField.getText();
         String contact = contactField.getText();
         String address = addressField.getText();
 
-        if (name.isEmpty() || contact.isEmpty() || address.isEmpty()) {
-            messageLabel.setText("Please fill all fields.");
-            messageLabel.setVisible(true);
+        Label[] errorLabels = {
+            nameErrorFeild,
+            contactErrorFeild,
+            addressErrorFeild   
+        };
+
+        String[] validationInstructions = {
+            "[drugName]{0}<"+name+">(required)",
+            "[buyer]{1}<"+contact+">(required)",
+            "[quantity]{2}<"+ address+">(required)"
+        };
+
+        HashMap<String, HashMap<String, Object>>  validate = Validator.validate(validationInstructions, errorLabels);
+
+        if(!(Boolean)validate.get("errorState").get("isvalid")){
+            System.out.println("there was an invalid input");
             return;
-        }
-    
+        }else{
         Supplier newSupplier = new Supplier(name,contact,address);
         if(newSupplier.isSuccessfullyStoredInDatabase()){
-            messageLabel.setText("Supplier added successfully!");
-            messageLabel.setVisible(true);
-            clearFields();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Success");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Supplier added successfully added successfully!");
+                    alert.showAndWait();
+                    clearFields();
+                    Navigator.navigate("/com/example/pharmacy_management_system/view_suppliers.fxml", event,loadingLabel);
         }else{
-            messageLabel.setStyle("-fx-progress-color: red;");
-            messageLabel.setText("Error adding supplier.");
-            messageLabel.setVisible(true);
-        }    
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Error adding Supplier.");
+            alert.showAndWait();
+        }
+        }
     }
 
     private void clearFields() {
@@ -76,51 +107,27 @@ public class AddSupplierController {
     }
 
 
-    public void navigate(String fxml, ActionEvent event) {
-        // Show the loading label
-        loadingLabel.setVisible(true);
-
-        // Create a task to load the new scene
-        Task<Void> task = new Task<>() {
-            @Override
-            protected Void call() throws Exception {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
-                Parent root = loader.load();
-                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                // Update the UI on the JavaFX Application Thread
-                javafx.application.Platform.runLater(() -> stage.getScene().setRoot(root));
-                return null;
-            }
-        };
-
-        // Set the task to hide the loading label after loading is done
-        task.setOnSucceeded(e -> loadingLabel.setVisible(false));
-
-        // Run the task in a background thread
-        new Thread(task).start();
-    }
-
     public void handleAddDrugs(ActionEvent event) {
-        navigate("/com/example/pharmacy_management_system/add_drug.fxml", event);
+        Navigator.navigate("/com/example/pharmacy_management_system/add_drug.fxml", event,loadingLabel);
     }
 
     public void handleSearchDrugs(ActionEvent event) {
-        navigate("/com/example/pharmacy_management_system/search_drug.fxml", event);
+        Navigator.navigate("/com/example/pharmacy_management_system/search_drug.fxml", event,loadingLabel);
     }
 
     public void handleViewSuppliers(ActionEvent event) {
-        navigate("/com/example/pharmacy_management_system/view_suppliers.fxml", event);
+        Navigator.navigate("/com/example/pharmacy_management_system/view_suppliers.fxml", event,loadingLabel);
     }
 
     public void handleViewDrugs(ActionEvent event) {
-        navigate("/com/example/pharmacy_management_system/view_drugs.fxml", event);
+        Navigator.navigate("/com/example/pharmacy_management_system/view_drugs.fxml", event,loadingLabel);
     }
 
     public void handleViewPurchaseHistory(ActionEvent event) {
-        navigate("/com/example/pharmacy_management_system/view_purchase_history.fxml", event);
+        Navigator.navigate("/com/example/pharmacy_management_system/view_purchase_history.fxml", event,loadingLabel);
     }
 
     public void handleStatisticsAndReports(ActionEvent event) {
-        navigate("/com/example/pharmacy_management_system/statistics.fxml", event);
+        Navigator.navigate("/com/example/pharmacy_management_system/statistics.fxml", event,loadingLabel);
     }
 }

@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.pharmacy_management_system.controllers.AddSupplierController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.pharmacy_management_system.controllers.AddSupplierController">
     <children>
         <BorderPane layoutY="1.0" prefHeight="525.0" prefWidth="927.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <top>
@@ -172,15 +172,17 @@
                         <Separator prefWidth="200.0" />
                         <GridPane alignment="CENTER" layoutX="52.0" layoutY="83.0" prefHeight="282.0" prefWidth="506.0" AnchorPane.bottomAnchor="120.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="120.0">
                             <columnConstraints>
-                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="281.59998474121096" minWidth="10.0" prefWidth="174.93331298828127" />
-                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="457.0666870117187" minWidth="10.0" prefWidth="457.0666870117187" />
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="341.0" minWidth="10.0" prefWidth="223.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="457.0666870117187" minWidth="10.0" prefWidth="441.0" />
                             </columnConstraints>
                             <rowConstraints>
-                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints maxHeight="43.0" minHeight="10.0" prefHeight="43.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="62.0" minHeight="0.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints maxHeight="134.0" minHeight="10.0" prefHeight="54.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="134.0" minHeight="10.0" prefHeight="33.0" vgrow="SOMETIMES" />
+                                <RowConstraints maxHeight="203.0" minHeight="10.0" prefHeight="57.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="145.0" minHeight="10.0" prefHeight="37.0" vgrow="SOMETIMES" />
+                                <RowConstraints maxHeight="218.0" minHeight="10.0" prefHeight="139.0" vgrow="SOMETIMES" />
                             </rowConstraints>
                             <children>
                                 <Label alignment="BOTTOM_CENTER" prefHeight="18.0" prefWidth="90.0" text="Name :" textFill="#0383df">
@@ -188,27 +190,28 @@
                                         <Font name="System Bold" size="13.0" />
                                     </font>
                                 </Label>
-                                <Label alignment="CENTER" layoutX="10.0" layoutY="41.0" prefHeight="18.0" prefWidth="107.0" text="Contact : " textFill="#0383df" GridPane.rowIndex="1">
+                                <Label alignment="CENTER" layoutX="10.0" layoutY="41.0" prefHeight="18.0" prefWidth="107.0" text="Contact : " textFill="#0383df" GridPane.rowIndex="2">
                                     <font>
                                         <Font name="System Bold" size="13.0" />
                                     </font>
                                 </Label>
-                                <Label alignment="CENTER" layoutX="10.0" layoutY="123.0" prefHeight="18.0" prefWidth="105.0" text="Address:" textFill="#0383df" GridPane.rowIndex="2">
+                                <Label alignment="CENTER" layoutX="10.0" layoutY="123.0" prefHeight="18.0" prefWidth="105.0" text="Address:" textFill="#0383df" GridPane.rowIndex="4">
                                     <font>
                                         <Font name="System Bold" size="13.0" />
                                     </font>
                                 </Label>
                                 <TextField fx:id="nameField" prefHeight="40.0" prefWidth="326.0" style="-fx-background-radius: 20;" GridPane.columnIndex="1" />
-                                <TextField fx:id="contactField" layoutX="129.0" layoutY="36.0" prefHeight="40.0" style="-fx-background-radius: 20;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                <TextField fx:id="addressField" layoutX="129.0" layoutY="116.0" prefHeight="40.0" style="-fx-background-radius: 20;" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                <TextField fx:id="contactField" layoutX="129.0" layoutY="36.0" prefHeight="40.0" style="-fx-background-radius: 20;" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                <TextField fx:id="addressField" layoutX="129.0" layoutY="116.0" prefHeight="40.0" style="-fx-background-radius: 20;" GridPane.columnIndex="1" GridPane.rowIndex="4" />
 
-                                <Button onAction="#handleAdd" prefHeight="40.0" prefWidth="350.0" style="-fx-background-color: #0383df; -fx-background-radius: 20;" text="Submit" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3">
+                                <Button onAction="#handleAdd" prefHeight="40.0" prefWidth="350.0" style="-fx-background-color: #0383df; -fx-background-radius: 20;" text="Submit" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="6">
                                     <font>
                                         <Font name="System Bold" size="13.0" />
                                     </font>
                                 </Button>
-
-                                <Label fx:id="messageLabel" text="Supplier added successfully!" textFill="#4caf50" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <Label fx:id="nameErrorFeild" prefHeight="17.0" prefWidth="474.0" textFill="#ff0606" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label fx:id="contactErrorFeild" prefHeight="17.0" prefWidth="467.0" textFill="#f80707" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <Label fx:id="addressErrorFeild" prefHeight="17.0" prefWidth="475.0" textFill="#ee0202" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                             </children>
                         </GridPane>
                         <Separator prefWidth="200.0" />

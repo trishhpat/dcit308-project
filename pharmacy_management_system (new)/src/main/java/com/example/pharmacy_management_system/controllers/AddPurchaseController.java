@@ -1,10 +1,11 @@
 package com.example.pharmacy_management_system.controllers;
 
+import com.example.pharmacy_management_system.controllers.ControllerTraits.Navigator;
+import com.example.pharmacy_management_system.controllers.ControllerTraits.Validator;
 import com.example.pharmacy_management_system.models.Drug;
 import com.example.pharmacy_management_system.models.PurchaseHistory;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,7 +17,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -45,6 +45,16 @@ public class AddPurchaseController {
 
     @FXML
     private Label loadingLabel;
+
+    @FXML
+    private Label drugErrorFeild;
+
+    @FXML
+    private Label buyerErrorFeild;
+
+    @FXML
+    private Label quantityErrorFeild;
+
 
     @FXML
     private ListView<String> drugNameSuggestionsListView;
@@ -98,7 +108,7 @@ public class AddPurchaseController {
 
     public void handleBack(ActionEvent event) {
         try {
-            Parent homePage = FXMLLoader.load(getClass().getResource("/com/example/pharmacy_management_system/view_purchase_history.fxml"));
+            Parent homePage = FXMLLoader.load(getClass().getResource(Navigator.getPreviousRoute()));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.getScene().setRoot(homePage);
         } catch (IOException e) {
@@ -109,28 +119,52 @@ public class AddPurchaseController {
     @FXML
     private void handleAdd(ActionEvent event) throws SQLException {
       
-            String drugName = drugNameField.getText().trim();
-            String buyer = buyerField.getText().trim();
-            int quantity = Integer.parseInt(quantityField.getText().trim());
-            double totalAmount = calculateTotalAmount(drugName, quantity);
-            LocalDateTime currentDate = LocalDateTime.now();
 
-            PurchaseHistory newPurchase = new PurchaseHistory(drugName,currentDate,buyer,quantity,totalAmount);
-            
-            if(newPurchase.isStoredInDatabaeSuccessfully() && drugModel.drugUpdateWasSuccessfulOnPurchaseWithQuantity(drugNamePriceMap.get(drugName).getId(), drugNamePriceMap.get(drugName).getQuantity(), quantity)){
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Success");
-                alert.setHeaderText(null);
-                alert.setContentText("Purchase recorded successfully added successfully!");
-                alert.showAndWait();
-                clearFields();
+            Label[] errorLabels = {
+                    drugErrorFeild,
+                    buyerErrorFeild,
+                    quantityErrorFeild   
+            };
+
+            String[] validationInstructions = {
+                "[drugName]{0}<"+drugNameField.getText()+">(required)",
+                "[buyer]{1}<"+buyerField.getText()+">(required)",
+                "[quantity]{2}<"+ quantityField.getText() +">(required)(mustBeInteger)"
+            };
+
+            HashMap<String, HashMap<String, Object>>  validate = Validator.validate(validationInstructions, errorLabels);
+
+            if(!(Boolean)validate.get("errorState").get("isvalid")){
+                System.out.println("there was an invalid input");
+                return;
             }else{
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText(null);
-                alert.setContentText("Error adding Purchase.");
-                alert.showAndWait();
+
+                String drugName = drugNameField.getText().trim();
+                String buyer = buyerField.getText().trim();
+                int quantity = Integer.parseInt(quantityField.getText().trim());
+                double totalAmount = calculateTotalAmount(drugName, quantity);
+                LocalDateTime currentDate = LocalDateTime.now();
+
+                PurchaseHistory newPurchase = new PurchaseHistory(drugName,currentDate,buyer,quantity,totalAmount);
+                if(newPurchase.isStoredInDatabaseSuccessfully() && drugModel.drugUpdateWasSuccessfulOnPurchaseWithQuantity(drugNamePriceMap.get(drugName).getId(), drugNamePriceMap.get(drugName).getQuantity(), quantity)){
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Success");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Purchase recorded successfully added successfully!");
+                    alert.showAndWait();
+                    clearFields();
+                    Navigator.navigate("/com/example/pharmacy_management_system/view_purchase_history.fxml", event,loadingLabel);                   
+                }else{
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Error adding Purchase.");
+                    alert.showAndWait();
+                }
+
             }
+    
+            
         
 
     }
@@ -172,51 +206,27 @@ public class AddPurchaseController {
         drugNameSuggestionsListView.getItems().clear(); // Clear suggestions list
     }
 
-    public void navigate(String fxml, ActionEvent event) {
-        // Show the loading label
-        loadingLabel.setVisible(true);
-
-        // Create a task to load the new scene
-        Task<Void> task = new Task<>() {
-            @Override
-            protected Void call() throws Exception {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
-                Parent root = loader.load();
-                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                // Update the UI on the JavaFX Application Thread
-                javafx.application.Platform.runLater(() -> stage.getScene().setRoot(root));
-                return null;
-            }
-        };
-
-        // Set the task to hide the loading label after loading is done
-        task.setOnSucceeded(e -> loadingLabel.setVisible(false));
-
-        // Run the task in a background thread
-        new Thread(task).start();
-    }
-
     public void handleAddDrugs(ActionEvent event) {
-        navigate("/com/example/pharmacy_management_system/add_drug.fxml", event);
+        Navigator.navigate("/com/example/pharmacy_management_system/add_drug.fxml", event,loadingLabel);
     }
 
     public void handleSearchDrugs(ActionEvent event) {
-        navigate("/com/example/pharmacy_management_system/search_drug.fxml", event);
+        Navigator.navigate("/com/example/pharmacy_management_system/search_drug.fxml", event,loadingLabel);
     }
 
     public void handleViewSuppliers(ActionEvent event) {
-        navigate("/com/example/pharmacy_management_system/view_suppliers.fxml", event);
+        Navigator.navigate("/com/example/pharmacy_management_system/view_suppliers.fxml", event,loadingLabel);
     }
 
     public void handleViewDrugs(ActionEvent event) {
-        navigate("/com/example/pharmacy_management_system/view_drugs.fxml", event);
+        Navigator.navigate("/com/example/pharmacy_management_system/view_drugs.fxml", event,loadingLabel);
     }
 
     public void handleViewPurchaseHistory(ActionEvent event) {
-        navigate("/com/example/pharmacy_management_system/view_purchase_history.fxml", event);
+        Navigator.navigate("/com/example/pharmacy_management_system/view_purchase_history.fxml", event,loadingLabel);
     }
 
     public void handleStatisticsAndReports(ActionEvent event) {
-        navigate("/com/example/pharmacy_management_system/statistics.fxml", event);
+        Navigator.navigate("/com/example/pharmacy_management_system/statistics.fxml", event,loadingLabel);
     }
 }

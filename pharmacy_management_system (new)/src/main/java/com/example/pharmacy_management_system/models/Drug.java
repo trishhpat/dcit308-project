@@ -97,6 +97,14 @@ public class Drug {
         this.supplierName = supplierName;
     }
 
+    public int getSupplierId() {
+        return supplier_id;
+    }
+
+    public void setSupplierId(int supplierId) {
+        this.supplier_id = supplierId;
+    }
+
     public int getRemainingQuantity() {
         return remainingQuantity;
     }

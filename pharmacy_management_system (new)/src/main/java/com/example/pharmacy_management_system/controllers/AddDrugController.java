@@ -1,23 +1,16 @@
 package com.example.pharmacy_management_system.controllers;
 
+import com.example.pharmacy_management_system.controllers.ControllerTraits.Navigator;
+import com.example.pharmacy_management_system.controllers.ControllerTraits.Validator;
 import com.example.pharmacy_management_system.models.Drug;
 import com.example.pharmacy_management_system.models.Supplier;
-import com.example.pharmacy_management_system.utils.DatabaseConnection;
-import javafx.application.Platform;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
-import javafx.stage.Stage;
 import javafx.event.ActionEvent;
-import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.util.StringConverter;
-
-import java.io.IOException;
 import java.sql.*;
+import java.util.HashMap;
 
 public class AddDrugController {
     @FXML
@@ -54,10 +47,24 @@ public class AddDrugController {
     private TextField categoryField;
 
     @FXML
+    private Label drugNameErrorFeild;
+
+    @FXML
+    private Label descriptionErrorFeild;
+
+    @FXML
+    private Label quantityErrorFeild;
+
+    @FXML
+    private Label priceErrorFeild;
+
+    @FXML
+    private Label supplierErrorFeild;
+
+    @FXML
     private ComboBox<Supplier> supplierComboBox;
 
     private Supplier supplierModel = new Supplier();
-    private Drug  drugModel = new Drug();
 
     @FXML
     public void initialize() throws SQLException {
@@ -89,7 +96,7 @@ public class AddDrugController {
     }
 
     @FXML
-    public void handleSaveDrug() throws SQLException {
+    public void handleSaveDrug(ActionEvent event) throws SQLException {
         String drugName = drugNameField.getText();
         String description = descriptionField.getText();
         String quantityStr = quantityField.getText();
@@ -97,121 +104,95 @@ public class AddDrugController {
         Supplier selectedSupplier = supplierComboBox.getSelectionModel().getSelectedItem();
 
         //make validations of inputs 
-
-        if (selectedSupplier == null) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText("Please select a supplier.");
-            alert.showAndWait();
-            return;
-        }
-        int supplierId = selectedSupplier.getId();
-
-
-        if (drugName.isEmpty() || description.isEmpty() || quantityStr.isEmpty() || priceStr.isEmpty() || selectedSupplier == null) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText("Please fill all fields and select a supplier.");
-            alert.showAndWait();
-            return;
-        }
-
-        int quantity;
-        double price;
-        try {
-            quantity = Integer.parseInt(quantityStr);
-            price = Double.parseDouble(priceStr);
-        } catch (NumberFormatException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText("Please enter valid numbers for quantity and price.");
-            alert.showAndWait();
-            return;
-        }
-
-
-        Drug newDrug = new Drug(drugName, description, quantity, price, supplierId);
-        if(newDrug.isSuccessfullyStoredInDatabase()){
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Success");
-            alert.setHeaderText(null);
-            alert.setContentText("Drug added successfully!");
-            alert.showAndWait();
-
-        }else{
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText("Error adding drug.");
-            alert.showAndWait();
-        }
-    }
-
-
-
-
-    public void navigate(String fxml, ActionEvent event) {
-        // Show the loading label
-        loadingLabel.setVisible(true);
-
-        // Create a task to load the new scene
-        Task<Void> task = new Task<>() {
-            @Override
-            protected Void call() throws Exception {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
-                Parent root = loader.load();
-                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                // Update the UI on the JavaFX Application Thread
-                javafx.application.Platform.runLater(() -> stage.getScene().setRoot(root));
-                return null;
-            }
+        
+        Label[] errorLabels = {
+            drugNameErrorFeild,
+            descriptionErrorFeild,
+            quantityErrorFeild,
+            priceErrorFeild
         };
 
-        // Set the task to hide the loading label after loading is done
-        task.setOnSucceeded(e -> loadingLabel.setVisible(false));
+        String[] validationInstructions = {
+            "[drugName]{0}<"+drugName+">(required)",
+            "[description]{1}<"+description+">(required)",
+            "[quantity]{2}<"+quantityStr+">(required)(mustBeInteger)",
+            "[price]{3}<"+priceStr+">(required)(mustBeFloat)",
+        };
 
-        // Run the task in a background thread
-        new Thread(task).start();
+        HashMap<String, HashMap<String, Object>>  validate = Validator.validate(validationInstructions, errorLabels);
+
+        if (selectedSupplier == null) {
+            supplierErrorFeild.setText("Please select a supplier.");
+            return;
+        }else{supplierErrorFeild.setText("");}
+        
+        if(!(Boolean)validate.get("errorState").get("isvalid")){
+            return;
+        }else{
+            HashMap<String,Object> data =  validate.get("validatedData");
+            int supplierId = selectedSupplier.getId();
+
+            Drug newDrug = new Drug();
+            newDrug.setDrugName(data.get("drugName").toString());
+            newDrug.setDescription(data.get("description").toString());
+            newDrug.setQuantity(Integer.parseInt(data.get("quantity").toString()));
+            newDrug.setPrice(Double.parseDouble(data.get("price").toString()));
+            newDrug.setSupplierId(supplierId);
+
+            if(newDrug.isSuccessfullyStoredInDatabase()){
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Success");
+                alert.setHeaderText(null);
+                alert.setContentText("Drug added successfully!");
+                alert.showAndWait();
+
+                supplierErrorFeild.setText("");
+
+                Navigator.navigate("/com/example/pharmacy_management_system/view_drugs.fxml", event,loadingLabel);
+    
+            }else{
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("Error adding drug.");
+                alert.showAndWait();
+
+                return;
+            }
+
+
+        }
+
     }
-
 
 
 
     public void handleBack(ActionEvent event) {
-        try {
-            Parent homePage = FXMLLoader.load(getClass().getResource("/com/example/pharmacy_management_system/hello-view.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.getScene().setRoot(homePage);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Navigator.navigate(Navigator.getPreviousRoute(), event,loadingLabel);
     }
 
 
     public void handleAddDrugs(ActionEvent event) {
-        navigate("/com/example/pharmacy_management_system/add_drug.fxml", event);
+        Navigator.navigate("/com/example/pharmacy_management_system/add_drug.fxml", event,loadingLabel);
     }
 
     public void handleSearchDrugs(ActionEvent event) {
-        navigate("/com/example/pharmacy_management_system/search_drug.fxml", event);
+        Navigator.navigate("/com/example/pharmacy_management_system/search_drug.fxml", event,loadingLabel);
     }
 
     public void handleViewSuppliers(ActionEvent event) {
-        navigate("/com/example/pharmacy_management_system/view_suppliers.fxml", event);
+        Navigator.navigate("/com/example/pharmacy_management_system/view_suppliers.fxml", event,loadingLabel);
     }
 
     public void handleViewDrugs(ActionEvent event) {
-        navigate("/com/example/pharmacy_management_system/view_drugs.fxml", event);
+        Navigator.navigate("/com/example/pharmacy_management_system/view_drugs.fxml", event,loadingLabel);
     }
 
     public void handleViewPurchaseHistory(ActionEvent event) {
-        navigate("/com/example/pharmacy_management_system/view_purchase_history.fxml", event);
+        Navigator.navigate("/com/example/pharmacy_management_system/view_purchase_history.fxml", event,loadingLabel);
     }
 
     public void handleStatisticsAndReports(ActionEvent event) {
-        navigate("/com/example/pharmacy_management_system/statistics.fxml", event);
+        Navigator.navigate("/com/example/pharmacy_management_system/statistics.fxml", event,loadingLabel);
     }
 }

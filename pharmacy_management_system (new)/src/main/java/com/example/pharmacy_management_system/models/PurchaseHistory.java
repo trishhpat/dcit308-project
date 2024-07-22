@@ -96,53 +96,58 @@ public class PurchaseHistory {
     }
 
 
-    public boolean  isStoredInDatabaeSuccessfully() {
+    public boolean isStoredInDatabaseSuccessfully() {
         try (Connection connection = DatabaseConnection.getConnection()) {
-            String query = "INSERT INTO purchase_history (drug_name, buyer, quantity, total_amount, purchase_date) VALUES (?, ?, ?, ?, ?)";
+            String query = "INSERT INTO purchase_history (drug_name, buyer, quantity, total_amount) VALUES (?, ?, ?, ?)";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, this.drug_name);
             statement.setString(2, this.buyer);
             statement.setInt(3, this.quantity);
             statement.setDouble(4, this.totalAmount);
-            statement.setTimestamp(5, Timestamp.valueOf(this.purchaseDate));
-
+    
             statement.executeUpdate();
             statement.close();
+            System.out.println("Information was stored successfully in the database");
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
     }
+    
 
-    public ObservableList<PurchaseHistory>  listOfPurchases(){
+    public ObservableList<PurchaseHistory> listOfPurchases() {
         ObservableList<PurchaseHistory> purchaseHistories = FXCollections.observableArrayList();
-
-        try(Connection connection = DatabaseConnection.getConnection()) {
+    
+        try (Connection connection = DatabaseConnection.getConnection()) {
             String sql = "SELECT ph.*, d.drug_name " +
-                    "FROM purchase_history ph " +
-                    "JOIN drugs d ON ph.drug_name = d.drug_name";
-
+                         "FROM purchase_history ph " +
+                         "JOIN drugs d ON ph.drug_name = d.drug_name";
+    
             Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
-
+    
             while (rs.next()) {
                 int id = rs.getInt("id");
                 String drugName = rs.getString("drug_name");
-                LocalDateTime purchaseDate = rs.getTimestamp("purchase_date").toLocalDateTime();
+                Timestamp purchaseDate = rs.getTimestamp("purchase_date");
+                LocalDateTime purchaseDateTime = purchaseDate.toLocalDateTime();
+    
                 String buyer = rs.getString("buyer");
                 int quantity = rs.getInt("quantity");
                 double totalAmount = rs.getDouble("total_amount");
-
-                PurchaseHistory purchaseHistory = new PurchaseHistory(drugName, purchaseDate, buyer, quantity, totalAmount);
+    
+                PurchaseHistory purchaseHistory = new PurchaseHistory(drugName, purchaseDateTime, buyer, quantity, totalAmount);
                 purchaseHistory.setId(id); // Set the ID retrieved from the database
                 purchaseHistories.add(purchaseHistory);
             }
             return purchaseHistories;
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
-        } 
+        }
         return null;
     }
+    
+    
 
 }
