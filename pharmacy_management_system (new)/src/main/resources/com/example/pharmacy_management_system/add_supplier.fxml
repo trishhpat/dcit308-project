@@ -209,7 +209,7 @@
                                         <Font name="System Bold" size="13.0" />
                                     </font>
                                 </Button>
-                        <Label fx:id="nameErrorFeild" prefHeight="17.0" prefWidth="474.0" textFill="#ff0606" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label fx:id="nameErrorFeild" prefHeight="6.0" prefWidth="442.0" textFill="#ff0606" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         <Label fx:id="contactErrorFeild" prefHeight="17.0" prefWidth="467.0" textFill="#f80707" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                         <Label fx:id="addressErrorFeild" prefHeight="17.0" prefWidth="475.0" textFill="#ee0202" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                             </children>
