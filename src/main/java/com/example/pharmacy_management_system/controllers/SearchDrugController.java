@@ -18,8 +18,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 public class SearchDrugController {
+
     @FXML
     private TextField searchField;
 
@@ -44,7 +46,7 @@ public class SearchDrugController {
     @FXML
     private Label pleaseWaitLabel;
 
-    private ObservableList<Drug> searchResults = FXCollections.observableArrayList();
+    private ObservableList<Drug> allDrugs = FXCollections.observableArrayList();
 
     private Drug drugModel = new Drug();
 
@@ -58,11 +60,28 @@ public class SearchDrugController {
 
         // Hide "Please wait" label initially
         pleaseWaitLabel.setVisible(false);
+
+        // Load all drugs from the database in the background
+        Task<Void> loadDrugsTask = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                allDrugs = drugModel.getDrugsInDatabase();
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                // Optionally, update UI or perform additional tasks
+            }
+        };
+
+        new Thread(loadDrugsTask).start();
     }
 
     @FXML
     private void handleSearch(ActionEvent event) {
-        searchResults.clear(); 
+        searchResultsTable.getItems().clear(); // Clear previous search results
         String searchTerm = searchField.getText().trim();
 
         if (searchTerm.isEmpty()) {
@@ -72,27 +91,32 @@ public class SearchDrugController {
         // Show "Please wait" label
         pleaseWaitLabel.setVisible(true);
 
-        // Perform database search in background task
+        // Perform search in background task
         Task<Void> searchTask = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-                searchResults = drugModel.searchDrugByName(searchTerm);
-                return null;
-            }
+                ObservableList<Drug> filteredDrugs = FXCollections.observableArrayList();
 
-            @Override
-            protected void succeeded() {
-                super.succeeded();
-                pleaseWaitLabel.setVisible(false);
+                // Use iterator to filter drugs
+                Iterator<Drug> iterator = allDrugs.iterator();
+                while (iterator.hasNext()) {
+                    Drug drug = iterator.next();
+                    if (drug.getDrugName().toLowerCase().contains(searchTerm.toLowerCase())) {
+                        filteredDrugs.add(drug);
+                    }
+                }
+
                 Platform.runLater(() -> {
-                    searchResultsTable.setItems(searchResults);
+                    searchResultsTable.setItems(filteredDrugs);
+                    pleaseWaitLabel.setVisible(false);
                 });
+
+                return null;
             }
         };
 
         new Thread(searchTask).start();
     }
-
 
     @FXML
     public void handleBack(ActionEvent event) {

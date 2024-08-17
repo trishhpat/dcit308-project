@@ -102,9 +102,6 @@ public class Drug {
 
 
 
-
-
-
     public boolean isSuccessfullyStoredInDatabase() throws SQLException{
         Connection connection = DatabaseConnection.getConnection();
         String insertQuery = "INSERT INTO drugs (drug_name, description, quantity, price, supplier_id) VALUES (?, ?, ?, ?, ?)";

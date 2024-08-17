@@ -165,19 +165,29 @@ public class AddPurchaseController {
         // Debugging output to verify drug name and quantity
         System.out.println("Calculating total amount for: " + drugName + ", Quantity: " + quantity + ", remaining quantity " + remainingQuantity);
 
-        if (drugNamePriceMap.containsKey(drugName) && quantity <= remainingQuantity) {
-            double price = drugNamePriceMap.get(drugName).getPrice();
-            return quantity * price;
+        if (drugNamePriceMap.containsKey(drugName)) {
+            Drug drug = drugNamePriceMap.get(drugName);
+            if (quantity <= remainingQuantity) {
+                double price = drug.getPrice();
+                return quantity * price;
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("Quantity is more than available. You only have " + remainingQuantity + " available.");
+                alert.showAndWait();
+                throw new IllegalArgumentException("Insufficient quantity: " + drugName);
+            }
         } else {
-
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText(null);
-            alert.setContentText("Quantity is more than available. You only have " + drugNamePriceMap.get(drugName).getQuantity() + " available.");
+            alert.setContentText("Drug not found in database: " + drugName);
             alert.showAndWait();
-            throw new IllegalArgumentException("Drug name not found in database or insufficient quantity: " + drugName);
+            throw new IllegalArgumentException("Drug name not found in database: " + drugName);
         }
     }
+
 
     @FXML
     private void handleCalculate(ActionEvent event) {

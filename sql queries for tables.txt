@@ -1,0 +1,31 @@
+sql queries for tables in the pharmacy management system.
+-- Create suppliers table
+CREATE TABLE suppliers (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    contact VARCHAR(255),
+    address TEXT
+);
+
+-- Create drugs table
+CREATE TABLE drugs (
+    id SERIAL PRIMARY KEY,
+    drug_name VARCHAR(255) NOT NULL UNIQUE,
+    description TEXT,
+    quantity INTEGER NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
+    supplier_id INTEGER,
+    FOREIGN KEY (supplier_id) REFERENCES suppliers(id) ON DELETE SET NULL
+);
+
+-- Create purchase_history table
+CREATE TABLE purchase_history (
+    id SERIAL PRIMARY KEY,
+    drug_name VARCHAR(255) NOT NULL,
+    purchase_date TIMESTAMP NOT NULL,
+    buyer VARCHAR(255) NOT NULL,
+    quantity INTEGER NOT NULL,
+    total_amount DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (drug_name) REFERENCES drugs(drug_name) ON DELETE CASCADE
+);
+

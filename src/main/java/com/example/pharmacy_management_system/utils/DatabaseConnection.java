@@ -5,11 +5,13 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-//Note the credentials in this project are temporary. They would expire after a while so you would need to configure your personal database either locally or remotely. The database used for this project is an online one. 
 public class DatabaseConnection {
-    private static final String URL = "jdbc:postgresql://dpg-cpnubig8fa8c73b7h500-a.oregon-postgres.render.com/pms_database_v9a2";
-    private static final String USER = "pms_database_v9a2_user";
-    private static final String PASSWORD = "r3UcCBXBQ9umX0L2c96E2BoYRHsJzR6a";
+    private static final String URL = "jdbc:postgresql://dpg-cqkbhm88fa8c73cjpi40-a.oregon-postgres.render.com/pms_j0vq";
+    private static final String USER = "pms_j0vq_user";
+    private static final String PASSWORD = "uTCiHez285IwnRsWfMIuJ9ehlfVQ4jFh";
+
+
+
 
     public static Connection getConnection() throws SQLException {
         try {

@@ -56,14 +56,13 @@ public class AddDrugController {
     @FXML
     private ComboBox<Supplier> supplierComboBox;
 
-    private Supplier supplierModel = new Supplier();
-    private Drug  drugModel = new Drug();
+    private final Supplier supplierModel = new Supplier();
+    private final Drug  drugModel = new Drug();
 
     @FXML
     public void initialize() throws SQLException {
         loadSuppliers();
     }
-
 
     private void loadSuppliers() throws SQLException {
         ObservableList<Supplier> suppliersList = supplierModel.listOfSupplier();
@@ -139,6 +138,7 @@ public class AddDrugController {
             alert.setTitle("Success");
             alert.setHeaderText(null);
             alert.setContentText("Drug added successfully!");
+
             alert.showAndWait();
 
         }else{
@@ -149,8 +149,6 @@ public class AddDrugController {
             alert.showAndWait();
         }
     }
-
-
 
 
     public void navigate(String fxml, ActionEvent event) {
